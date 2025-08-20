@@ -1,0 +1,2 @@
+# Automatizacao_rumores
+
