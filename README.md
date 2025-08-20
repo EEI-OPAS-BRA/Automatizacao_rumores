@@ -1,2 +1,2 @@
-# Automatizacao_rumores
+# Automatização de rummores para Plataforma EIOS
 
