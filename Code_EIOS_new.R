@@ -30,24 +30,18 @@ get_rss_data <- function(url) {
 
 # URLs dos feeds RSS
 urls <- c(
-  "https://portal.who.int/eios/API/News/Monitoring/getBoardRssFeed?queryId=12760",
-  "https://portal.who.int/eios/API/News/Monitoring/getBoardRssFeed?queryId=13428",
-  "https://portal.who.int/eios/API/News/Monitoring/getBoardRssFeed?queryId=17593",
-  "https://portal.who.int/eios/API/News/Monitoring/getBoardRssFeed?queryId=13620",
-  "https://portal.who.int/eios/API/News/Monitoring/getBoardRssFeed?queryId=11151",
-  "https://portal.who.int/eios/API/News/Monitoring/getBoardRssFeed?queryId=17828"
+  "https://portal.who.int/eios/API/News/Monitoring/getBoardRssFeed?queryId=1780",
+  "https://portal.who.int/eios/API/News/Monitoring/getBoardRssFeed?queryId=1781",
+  "https://portal.who.int/eios/API/News/Monitoring/getBoardRssFeed?queryId=10922",
 )
 
 
 
 # Nomes dos termos associados a cada URL
 termos <- c(
-  'Surtos e Emergências',
-  'Secas e Queimadas',
-  'Vírus Respiratorios',
-  'Ameaças Naturais',
-  'Arboviroses',
-  "Vacinação"
+  '24H Nacional',
+  '24H Internacional',
+  'plantão_CIEVS'
 )
 
 
