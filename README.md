@@ -1,4 +1,4 @@
 # Automatização de rumores para Plataforma EIOS
-## Destinado para  para redução de ruído informacional, utlizando aplataforma EIOS como buscador de rumores.
-### seus principais atributos são
+## Destinado para  para redução de ruído informacional, utlizando a plataforma EIOS como buscador de rumores.
+### A ideia do script será a de dminuir a necessidade de busca manual na plataforma , filtrando apenas as notítcias mais importantes.
 
