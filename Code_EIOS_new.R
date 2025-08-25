@@ -1,27 +1,29 @@
 library(pacman)
-pacman::p_load(tidyverse,
+pacman::p_load(purrr,
+  dplyr,#manipulação de dataframe
                stopwords,#limpeza de texto, deixar em pt
                xml2, #trabalhar com HTML e XML
-               httr,
                tidytext,#mineração de texto
-               lubridate,
-               stringi,
-               stringr,
-               writexl,
-               officer,
-               zip)
+               lubridate,#manipulação de data
+               stringi,#manipulação de string/texto
+               stringr,#manipulação de string/texto
+               writexl,#cria tabela
+               openxlsx,#estruturar a tabela 
+               )
+
+
 # Carregar pacotes necessários
 
 # Função para analisar o feed RSS e criar um DataFrame
 get_rss_data <- function(url) {
-  feed <- read_xml(url)
-  items <- xml_find_all(feed, "//item")
+  feed <- xml2::read_xml(url)
+  items <- xml2::xml_find_all(feed, "//item")
   
   data <- tibble(
-    Title = xml_text(xml_find_all(items, "title")),
-    Link = xml_text(xml_find_all(items, "link")),
-    Published = xml_text(xml_find_all(items, "pubDate")),
-    Description = xml_text(xml_find_all(items, "description"))
+    Title = xml2::xml_text(xml_find_all(items, "title")),
+    Link = xml2::xml_text(xml_find_all(items, "link")),
+    Published = xml2::xml_text(xml_find_all(items, "pubDate")),
+    Description = xml2::xml_text(xml_find_all(items, "description"))
   )
   return(data)
 }
@@ -52,22 +54,22 @@ termos <- c(
 
 
 # Baixar e combinar os dados dos feeds RSS
-df_list <- map(urls, get_rss_data)
-df_list <- map2(df_list, termos, ~ mutate(.x, Termo = .y))
+df_list <- purrr::map(urls, get_rss_data)
+df_list <- purrr::map2(df_list, termos, ~ mutate(.x, Termo = .y))
 df_final <- bind_rows(df_list)
 
 # Função para limpar texto
 limpar_texto <- function(texto) {
-  texto <- stri_trans_general(texto, "Latin-ASCII")
-  texto <- str_remove_all(texto, "[^a-zA-Z0-9\\s]")
-  palavras <- str_split(texto, "\\s+")[[1]]
+  texto <- stringi::stri_trans_general(texto, "Latin-ASCII")
+  texto <- stringr::str_remove_all(texto, "[^a-zA-Z0-9\\s]")
+  palavras <- stringr::str_split(texto, "\\s+")[[1]]
   palavras <- palavras[!tolower(palavras) %in% stopwords("pt")]
   return(paste(palavras, collapse = " "))
 }
 
 # Limpar o título
 df_final <- df_final %>%
-  mutate(Title_limpo = map_chr(Title, limpar_texto))
+  dplyr::mutate(Title_limpo = map_chr(Title, limpar_texto))
 
 # Lista de palavras-chave
 palavras_chave <- c("casos", "contra", "alerta", "doenca", "aumento", "grande", "emergencia", "numero", "situacao",
@@ -84,27 +86,27 @@ palavras_chave <- c("casos", "contra", "alerta", "doenca", "aumento", "grande", 
 
 # Função para calcular a pontuação com base nas palavras-chave
 calcular_pontuacao <- function(texto) {
-  texto <- stri_trans_general(texto, "Latin-ASCII")
-  texto <- str_remove_all(texto, "[^a-zA-Z0-9\\s]")
+  texto <- stringi::stri_trans_general(texto, "Latin-ASCII")
+  texto <- stringr::str_remove_all(texto, "[^a-zA-Z0-9\\s]")
   pontuacao <- sum(str_detect(texto, palavras_chave))
   return(pontuacao)
 }
 
 # Calcular pontuação, filtrar resultados e remover duplicatas
 df_final <- df_final %>%
-  mutate(Pontuacao = map_int(Title_limpo, calcular_pontuacao)) %>%
-  arrange(desc(Pontuacao))
+  dplyr::mutate(Pontuacao = map_int(Title_limpo, calcular_pontuacao)) %>%
+  dplyr::arrange(desc(Pontuacao))
 
 
 df_final_filtrado <- df_final %>%
-  filter(Pontuacao >= 2) %>%
-  distinct(Title, .keep_all = TRUE)
+  dplyr::filter(Pontuacao >= 1) %>%
+  dplyr::distinct(Title, .keep_all = TRUE)
 
 
 
 # Atualizar nomes das colunas e remover a coluna 'Title_limpo'
 df_final_filtrado <- df_final_filtrado %>%
-  select(
+  dplyr::select(
     Título = Title,
     Link,
     `Data da Publicação` = Published,
@@ -168,16 +170,16 @@ df_final_filtrado <- df_final_filtrado[, c("Categoria", "Título", "Link", "Data
 
 
 
-df_final_filtrado$Descrição <- str_wrap(df_final_filtrado$Descrição, width = 60)
+df_final_filtrado$Descrição <- stringr::str_wrap(df_final_filtrado$Descrição, width = 60)
 
-wb <- createWorkbook()
-addWorksheet(wb, "Sheet1")
+wb <- openxlsx::createWorkbook()
+openxlsx::addWorksheet(wb, "Sheet1")
 
-writeData(wb, "Sheet1", df_final_filtrado, startCol = 1, startRow = 1)
+openxlsx::writeData(wb, "Sheet1", df_final_filtrado, startCol = 1, startRow = 1)
 
 
 for (i in seq_along(df_final_filtrado$Link)) {
-  writeFormula(
+  openxlsx::writeFormula(
     wb, "Sheet1",
     startRow = i + 1, startCol = 3,
     x = sprintf('=HYPERLINK("%s", "%s")',  df_final_filtrado$Link[i], df_final_filtrado$Link[i])
@@ -195,7 +197,7 @@ nome_arquivo <- paste0(caminho, "Rumores_", data_atual, ".xlsx")
 
 # Exportar o data frame para o arquivo CSV no caminho especificado
 
-saveWorkbook(wb, nome_arquivo, overwrite = TRUE)
+openxlsx::saveWorkbook(wb, nome_arquivo, overwrite = TRUE)
 # export(df_unique, nome_arquivo)
 
 
