@@ -1,6 +1,6 @@
 library(pacman)
-pacman::p_load(purrr,
-  dplyr,#manipulação de dataframe
+pacman::p_load(purrr,#iterar sobre dois argumentos por vez
+               dplyr,#manipulação de dataframe
                stopwords,#limpeza de texto, deixar em pt
                xml2, #trabalhar com HTML e XML
                tidytext,#mineração de texto
@@ -8,7 +8,7 @@ pacman::p_load(purrr,
                stringi,#manipulação de string/texto
                stringr,#manipulação de string/texto
                writexl,#cria tabela
-               openxlsx,#estruturar a tabela 
+               openxlsx#estruturar a tabela 
                )
 
 
@@ -32,7 +32,7 @@ get_rss_data <- function(url) {
 urls <- c(
   "https://portal.who.int/eios/API/News/Monitoring/getBoardRssFeed?queryId=1780",
   "https://portal.who.int/eios/API/News/Monitoring/getBoardRssFeed?queryId=1781",
-  "https://portal.who.int/eios/API/News/Monitoring/getBoardRssFeed?queryId=10922",
+  "https://portal.who.int/eios/API/News/Monitoring/getBoardRssFeed?queryId=10922"
 )
 
 
@@ -93,7 +93,7 @@ df_final <- df_final %>%
 
 
 df_final_filtrado <- df_final %>%
-  dplyr::filter(Pontuacao >= 1) %>%
+  dplyr::filter(Pontuacao >= 3) %>%
   dplyr::distinct(Title, .keep_all = TRUE)
 
 
@@ -185,25 +185,9 @@ for (i in seq_along(df_final_filtrado$Link)) {
 data_atual <- format(Sys.Date(), "%d-%m-%Y")
 
 # Definir o caminho completo do diretório e nome do arquivo
-caminho <- "C:/Users/andradecle/OneDrive - Pan American Health Organization/General - PHE BRA/Rumores/Automatização/"
 
-nome_arquivo <- paste0(caminho, "Rumores_", data_atual, ".xlsx")
+nome_arquivo <- paste0("Rumores_", data_atual, ".xlsx")
 
 # Exportar o data frame para o arquivo CSV no caminho especificado
 
 openxlsx::saveWorkbook(wb, nome_arquivo, overwrite = TRUE)
-# export(df_unique, nome_arquivo)
-
-
-
-
-
-# # Defina o arquivo original
-# excel_file <- "feed_data__filtrado.xlsx"
-# 
-# # Defina o caminho de destino, incluindo a data do dia no nome do arquivo
-# today_date <- Sys.Date()
-# destination <- paste0("C:/Users/andradecle/OneDrive - Pan American Health Organization/General - PHE BRA/Rumores/Automatização/feed_data_filtrado_", today_date, ".xlsx")
-# write_xlsx(df_unique, excel_file)
-# # Copie o arquivo para o destino
-# file.copy(excel_file, destination)
