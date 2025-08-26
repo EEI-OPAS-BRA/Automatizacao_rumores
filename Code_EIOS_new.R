@@ -10,8 +10,7 @@ pacman::p_load(purrr,#iterar sobre dois argumentos por vez
                writexl,#cria tabela
                openxlsx#estruturar a tabela 
                )
-
-# Carregar pacotes necessários
+#NACIONAL####
 
 # Função para analisar o feed RSS e criar um DataFrame
 get_rss_data <- function(url) {
@@ -199,7 +198,7 @@ openxlsx::saveWorkbook(wb, nome_arquivo, overwrite = TRUE)
 
 
 
-#INGLES####
+#INTERNACIONAL####
 
 # Função para analisar o feed RSS e criar um DataFrame
 get_rss_data <- function(url) {
@@ -249,6 +248,7 @@ df_final <- df_final %>%
   dplyr::mutate(Title_limpo = map_chr(Title, limpar_texto))
 
 # Lista de palavras-chave
+
 palavras_chave <- c("alert","fever","outbreak","emergency","measles")
 
 
