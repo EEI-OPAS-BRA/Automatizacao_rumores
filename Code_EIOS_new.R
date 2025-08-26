@@ -70,12 +70,11 @@ palavras_chave <- c("casos", "contra", "alerta", "doenca", "aumento", "grande", 
                     "mortes", "caso", "vacina","vacinacao","campanha vacinacao","doses", "registra", "maior", "chuvas", "dados", "surto", "confirmados","gripe","virus respiratorios",
                     "confirma", "morte", "obitos", "obito", "virus", "alta", "risco", "vigilancia", "seca", "leitos", 
                     "registrou", "chuva", "causa", "queimada", "queimadas", "estiagem", "quente", "hospitalizacao", 
-                    "internacao", "SRAG","VSR", "influenza aviaria","aviaria","H5N1","rinovirus","covid","infogripe","gripe aviária","EUA","Síndrome Respiratória Aguda Grave","sobrecarregam","sobrecarregar")
+                    "internacao", "SRAG","VSR", "influenza aviaria","aviaria","H5N1","rinovirus","covid","infogripe","gripe aviária","EUA","Síndrome Respiratória Aguda Grave","sobrecarregam","sobrecarregar","alert","fever","outbreak","emergency")
+
+palavras_chave_2 <- c("doenca misteriosa","doença misteriosa")
 
 
-# Filter news based on keywords in the title only
-
-# df_final <- df_final[grepl(paste(palavras_chave, collapse = "|"), df_final$Title, ignore.case = TRUE), ]
 
 
 # Função para calcular a pontuação com base nas palavras-chave
@@ -92,9 +91,16 @@ df_final <- df_final %>%
   dplyr::arrange(desc(Pontuacao))
 
 
+
+
 df_final_filtrado <- df_final %>%
-  dplyr::filter(Pontuacao >= 3) %>%
+  dplyr::filter(Pontuacao >= 1) %>%
   dplyr::distinct(Title, .keep_all = TRUE)
+
+
+# para caso vc queira usar as palavras chave só no título
+
+# df_final <- df_final[grepl(paste(palavras_chave, collapse = "|"), df_final$Title, ignore.case = TRUE), ]
 
 
 
