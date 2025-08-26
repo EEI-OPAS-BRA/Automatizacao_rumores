@@ -29,7 +29,6 @@ get_rss_data <- function(url) {
 # URLs dos feeds RSS
 urls <- c(
   "https://portal.who.int/eios/API/News/Monitoring/getBoardRssFeed?queryId=1780",
-  "https://portal.who.int/eios/API/News/Monitoring/getBoardRssFeed?queryId=1781",
   "https://portal.who.int/eios/API/News/Monitoring/getBoardRssFeed?queryId=10922"
 )
 
@@ -38,7 +37,6 @@ urls <- c(
 # Nomes dos termos associados a cada URL
 termos <- c(
   '24H Nacional',
-  '24H Internacional',
   'plantão_CIEVS'
 )
 
